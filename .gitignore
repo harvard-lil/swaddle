@@ -1,3 +1,6 @@
+scripts/config.json
+test_server/*.json
+
 # Logs
 logs
 *.log
