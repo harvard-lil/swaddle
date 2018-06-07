@@ -1,5 +1,6 @@
 scripts/config.json
-test_server/*.json
+test_server/*.js
+dist/*
 
 # Logs
 logs

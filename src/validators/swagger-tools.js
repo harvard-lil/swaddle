@@ -54,20 +54,27 @@ async function getNodeStyleRequest(request){
     On error, throws err with validationError = true and statusCode = response status code.
 */
 export async function getValidator(apiSpec){
-  let addSwaggerMetadata = swaggerMetadata(apiSpec);
-  let validateRequest = swaggerValidator();
 
   return async (request)=>{
     const req = await getNodeStyleRequest(request);
     const res = {};
-    let err;
 
     // perform validation
-    addSwaggerMetadata(req, res, ()=>{});
-    validateRequest(req, res, (e)=>{ err = e });
-
-    // handle validation error
-    if(err) {
+    const addSwaggerMetadata = swaggerMetadata(apiSpec);
+    const validateRequest = swaggerValidator();
+    try{
+      await new Promise((resolve, reject)=>{
+        addSwaggerMetadata(req, res, ()=>{
+          validateRequest(req, res, (e)=>{
+            if(e)
+              reject(e);
+            else
+              resolve();
+          });
+        });
+      });
+    }catch(err){
+      // handle validation error
       err.statusCode = res.statusCode;
       err.validationError = true;
       throw err;
@@ -75,6 +82,7 @@ export async function getValidator(apiSpec){
 
     // handle route not found
     if(!req.swagger){
+      const err = new Error(`${req.url} not found in ${JSON.stringify(apiSpec)}`);
       err.statusCode = 404;
       err.validationError = true;
       throw err;

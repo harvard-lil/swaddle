@@ -16,9 +16,17 @@ const { spawnSync } = require( 'child_process' );
 
   // call webpack to build from source
   console.log("Building dist/sw.js ...");
-  const buildResult = spawnSync( 'npm', [ 'run', 'build' ] );
+  const buildResult = spawnSync(
+    'npx', [
+      'webpack',
+      '--config', 'webpack/prod.config.js',
+      `--env.OPENAPI_WAF_CONFIG=${JSON.stringify(config.config)}`
+    ],
+    {
+      stdio: 'inherit',
+    });
   if(buildResult.status !== 0){
-    console.log(`npm run build exited with status ${buildResult.status}:\n${buildResult.stdout}\n${buildResult.stderr}`);
+    console.log(`webpack build exited with status ${buildResult.status}:\n${buildResult.stdout}\n${buildResult.stderr}`);
     return;
   }
 
@@ -33,7 +41,9 @@ const { spawnSync } = require( 'child_process' );
     },
     body: fs.createReadStream(path.resolve(__dirname, '../dist/sw.js')),
   });
-  const responseJson = await response.json();
+  const responseText = await response.text();
+  // console.log(responseText);
+  const responseJson = JSON.parse(responseText);
   console.log("Success:", responseJson.success);
   if(!responseJson.success)
     console.log(responseJson.errors);
