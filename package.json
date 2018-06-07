@@ -6,7 +6,7 @@
   "dependencies": {},
   "devDependencies": {
     "node-fetch": "^2.1.2",
-    "swagger-tools": "git+https://github.com/apigee-127/swagger-tools.git",
+    "swagger-tools": "git+https://github.com/jcushman/swagger-tools.git",
     "webpack": "^4.10.2",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": "^3.1.4",

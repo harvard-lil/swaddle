@@ -66,11 +66,10 @@ async function validateFetch(request){
   }
 
   // Get validator for this URL, loading and caching if necessary.
-  // if(!validators[origin]) {
-  //   validators[origin] = await loadValidator(origin + "/swagger.json", request);
-  // }
-  // let [apiSpec, validator] = validators[origin];
-  let [apiSpec, validator] = await loadValidator(origin + "/swagger.json", request);
+  if(!validators[origin]) {
+    validators[origin] = await loadValidator(origin + "/swagger.json", request);
+  }
+  let [apiSpec, validator] = validators[origin];
 
   // avoid urls outside of the swagger.json spec
   if(!parsedUrl.pathname.startsWith(apiSpec.basePath)){

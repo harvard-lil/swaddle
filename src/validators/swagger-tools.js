@@ -54,14 +54,17 @@ async function getNodeStyleRequest(request){
     On error, throws err with validationError = true and statusCode = response status code.
 */
 export async function getValidator(apiSpec){
+  let swaggerLoaded = false;
+  const addSwaggerMetadata = swaggerMetadata(apiSpec, undefined, ()=>{swaggerLoaded=true});
+  const validateRequest = swaggerValidator();
+  while(!swaggerLoaded)
+    await (async () => undefined)();
 
   return async (request)=>{
     const req = await getNodeStyleRequest(request);
     const res = {};
 
     // perform validation
-    const addSwaggerMetadata = swaggerMetadata(apiSpec);
-    const validateRequest = swaggerValidator();
     try{
       await new Promise((resolve, reject)=>{
         addSwaggerMetadata(req, res, ()=>{
