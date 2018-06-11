@@ -64,7 +64,7 @@ async function validateFetch(request){
   let response;
 
   if(request.pathname === "/swagger.json"){
-    return addHeaders(fetch(request), 'ignored');
+    return addHeaders(await fetch(request), 'ignored');
   }
 
   // Get validator for this URL, loading and caching if necessary.
@@ -76,7 +76,7 @@ async function validateFetch(request){
   // avoid urls outside of the swagger.json spec
   if(!parsedUrl.pathname.startsWith(apiSpec.basePath)){
     console.log(`Requested path ${parsedUrl.pathname} does not start with ${apiSpec.basePath} -- sending to origin.`);
-    return addHeaders(fetch(request), 'ignored');
+    return addHeaders(await fetch(request), 'ignored');
   }
 
   // perform validation
