@@ -12,7 +12,7 @@ module.exports = {
   },
   plugins: [
     // For testing, Chrome chokes on utf-8 characters in sw.js unless we add an explicit utf-8 BOM character.
-    new BomPlugin(true),
+    // new BomPlugin(true),
   ],
     /* inject stub modules with precedence over node_modules, so we can override unnecessary modules that increase the
       size of the build too much */

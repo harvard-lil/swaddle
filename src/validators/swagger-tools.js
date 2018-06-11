@@ -2,6 +2,7 @@
 
 import * as swaggerValidator from 'swagger-tools/middleware/swagger-validator';
 import * as swaggerMetadata from 'swagger-tools/middleware/swagger-metadata';
+import {getNodeStyleRequest} from "../helpers";
 
 
 /*
@@ -10,40 +11,6 @@ import * as swaggerMetadata from 'swagger-tools/middleware/swagger-metadata';
   See https://github.com/bahmutov/express-service/blob/7a9b12fddb6ab8d6b348d4255fcc08b0cc1485a4/src/service.js#L89
   for a more complete implementation.
 */
-async function getNodeStyleRequest(request){
-  // get content type
-  let contentType;
-  try{
-    contentType = request.headers.get('Content-Type').split(';')[0];
-  }catch (err) {}
-
-  // parse request data into dict based on content type
-  let body = {};
-  switch(contentType){
-    case 'application/x-www-form-urlencoded':
-      body = await request.clone().formData();
-      break;
-    case 'application/json':
-      body = await request.clone().json();
-      break;
-    case 'multipart/form-data':
-      throw "Support for multipart/form-data not implemented.";
-  }
-
-  // copy headers
-  const headers = {};
-  for (const pair of request.headers.entries())
-    headers[pair[0].toLowerCase()] = pair[1];
-
-  // return new object
-  return {
-    url: request.url,
-    method: request.method,
-    body: body,
-    headers: headers,
-    contentTypePrefix: contentType,
-  };
-}
 
 /*
   Given an OpenAPI 2 json spec, return a function that validates a request against the spec.

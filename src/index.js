@@ -26,7 +26,7 @@ if ('serviceWorker' in navigator) {
     makeButton("URL outside API", ()=>{fetch('/foo')}); // should stop processing when it realizes URL doesn't match
     makeButton("non-existing URL", ()=>{fetch('/api/foo')}); // should detect bad URL and send 404 upstream
     makeButton("simple GET", ()=>{fetch('/api/pets')}); // should send upstream
-    makeButton("GET with ignored param", ()=>{fetch('/api/pets?foo=bar')});  // should filter out param
+    makeButton("GET with param", ()=>{fetch('/api/pets?limit=1&ignore=bar')});  // should filter out param
     makeButton("GET with bad param", ()=>{fetch('/api/pets?limit=bar')});  // should complain that limit isn't an int
 
     // should accept JSON and post upstream

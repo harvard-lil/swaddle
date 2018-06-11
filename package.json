@@ -7,7 +7,9 @@
   "devDependencies": {
     "node-fetch": "^2.1.2",
     "swagger-tools": "git+https://github.com/jcushman/swagger-tools.git",
+    "sway": "git+https://github.com/apigee-127/sway.git",
     "webpack": "^4.10.2",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": "^3.1.4",
     "webpack-utf8-bom": "^1.1.3"

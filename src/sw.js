@@ -1,13 +1,14 @@
 'use strict';
 
-import { getValidator } from "./validators/swagger-tools";
+// import { getValidator } from "./validators/swagger-tools";
+import { getValidator } from "./validators/sway";
 
 
 let validators = {};
 
 /* Add headers to response. */
-function addHeaders(response, headers){
-  const newHeaders = new Headers(response.headers);
+function addHeaders(response, status){
+  const newHeaders = new Headers({'X-OpenWAF': status});
   Object.keys(headers).forEach(key => newHeaders.append(key, headers[key]));
   return new Response(response.body, {
     status: response.status,
@@ -91,8 +92,13 @@ async function validateFetch(request){
       // route not found -- report 404 upstream
       if(err.statusCode === 404) {
         // TODO: what if any request attributes should be passed along in a 404?
-        return new Response(err.message, {status: err.statusCode});
-        // return fetchWithQuery(origin + "/not-found", {query: {origUrl: request.url}});
+        if(OPENAPI_WAF_CONFIG.ERRORS_TO_CLIENT)
+          return new Response(err.message, {status: err.statusCode});
+        else
+          return fetchWithQuery(origin + "/not-found", {
+            query: {origUrl: request.url},
+            headers: {Accept: request.headers.getHeader('accept')},
+          });
 
       // validation failed -- return 400
       }else {
@@ -112,10 +118,8 @@ async function validateFetch(request){
     query: upstreamParams.query,
     body: upstreamParams.body,
   });
-  return responsePromise;
-  // return addHeaders(await responsePromise, {
-  //   'X-OpenWAF-Approved': '1'
-  // });
+  // return responsePromise;
+  return addHeaders(await responsePromise, 'ok');
 }
 
 /* Catch errors thrown by promise, and either log them or return them to client depending on DEBUG setting. */
