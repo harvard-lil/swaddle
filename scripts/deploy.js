@@ -20,7 +20,6 @@ const { spawnSync } = require( 'child_process' );
     'npx', [
       'webpack',
       '--config', 'webpack/prod.config.js',
-      `--env.OPENAPI_WAF_CONFIG=${JSON.stringify(config.config)}`
     ],
     {
       stdio: 'inherit',
