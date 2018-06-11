@@ -8,8 +8,8 @@ let validators = {};
 
 /* Add headers to response. */
 function addHeaders(response, status){
-  const newHeaders = new Headers({'X-OpenWAF': status});
-  Object.keys(headers).forEach(key => newHeaders.append(key, headers[key]));
+  const newHeaders = new Headers(response.headers);
+  newHeaders.append('X-OpenWAF', status);
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
@@ -61,9 +61,10 @@ async function validateFetch(request){
 
   const parsedUrl = new URL(request.url);
   const origin = parsedUrl.origin;
+  let response;
 
   if(request.pathname === "/swagger.json"){
-    return fetch(request);
+    return addHeaders(fetch(request), 'ignored');
   }
 
   // Get validator for this URL, loading and caching if necessary.
@@ -75,7 +76,7 @@ async function validateFetch(request){
   // avoid urls outside of the swagger.json spec
   if(!parsedUrl.pathname.startsWith(apiSpec.basePath)){
     console.log(`Requested path ${parsedUrl.pathname} does not start with ${apiSpec.basePath} -- sending to origin.`);
-    return fetch(request);
+    return addHeaders(fetch(request), 'ignored');
   }
 
   // perform validation
@@ -93,17 +94,19 @@ async function validateFetch(request){
       if(err.statusCode === 404) {
         // TODO: what if any request attributes should be passed along in a 404?
         if(OPENAPI_WAF_CONFIG.ERRORS_TO_CLIENT)
-          return new Response(err.message, {status: err.statusCode});
+          response = new Response(err.message, {status: err.statusCode});
         else
-          return fetchWithQuery(origin + "/not-found", {
+          response = fetchWithQuery(origin + "/not-found", {
             query: {origUrl: request.url},
             headers: {Accept: request.headers.getHeader('accept')},
           });
 
       // validation failed -- return 400
       }else {
-        return new Response(err.message, {status: err.statusCode});
+        response = new Response(err.message, {status: err.statusCode});
       }
+
+      return addHeaders(response, 'err');
     }
 
     // not a validation error
