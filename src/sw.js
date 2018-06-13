@@ -96,9 +96,9 @@ async function validateFetch(request){
         if(OPENAPI_WAF_CONFIG.ERRORS_TO_CLIENT)
           response = new Response(err.message, {status: err.statusCode});
         else
-          response = fetchWithQuery(origin + "/not-found", {
+          response = await fetchWithQuery(origin + "/not-found", {
             query: {origUrl: request.url},
-            headers: {Accept: request.headers.getHeader('accept')},
+            headers: {Accept: request.headers.get('accept')},
           });
 
       // validation failed -- return 400
