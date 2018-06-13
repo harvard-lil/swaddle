@@ -14,9 +14,20 @@ the service workers API).
 * npm install
 * copy scripts/config.json.sample to scripts/config.json
 * run `npm run deploy` to build the service worker and deploy it to Cloudflare
-* enable the service worker for /* on any domain where you want to enforce OpenAPI rules
+* enable the service worker for yoursite.com/* in Cloudflare
 
-## Firewall behavior
+## Uploading to Cloudflare
+
+Config variables are set in scripts/config.json. You must provide your cloudflare email, API key, and zone ID to
+let `npm run deploy` automatically upload dist/sw.js for you. Alternatively, you could run `npm run build` and use
+the Cloudflare API or web interface to upload dist/sw.js for yourself.
+
+## Debugging
+
+Some issues are difficult to debug in the Cloudflare Service Workers console, and require debugging of live requests.
+To send stack traces and path resolution errors directly to the client, set `DEBUG_TO_CLIENT: true` in scripts/config.json.
+
+## Swaddle's firewall behavior
 
 Swaddle checks all incoming requests, and takes one of four actions:
 
