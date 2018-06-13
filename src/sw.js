@@ -93,7 +93,7 @@ async function validateFetch(request){
       // route not found -- report 404 upstream
       if(err.statusCode === 404) {
         // TODO: what if any request attributes should be passed along in a 404?
-        if(SWADDLE_CONFIG.ERRORS_TO_CLIENT)
+        if(SWADDLE_CONFIG.DEBUG_TO_CLIENT)
           response = new Response(err.message, {status: err.statusCode});
         else
           response = await fetchWithQuery(origin + "/not-found", {
@@ -132,7 +132,7 @@ async function handleErrors(promiseResponse){
   } catch (err) {
     // Display the error stack.
     console.log("Caught error while validating:", err);
-    if(SWADDLE_CONFIG.ERRORS_TO_CLIENT)
+    if(SWADDLE_CONFIG.DEBUG_TO_CLIENT)
       return new Response(err.stack || err);
     else
       throw err;
