@@ -5,7 +5,10 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
+    "jest": "^23.1.0",
+    "jest-webpack": "git+https://github.com/quinn/jest-webpack.git#fe1865f",
     "node-fetch": "^2.1.2",
+    "service-worker-mock": "^1.9.2",
     "sway": "git+https://github.com/apigee-127/sway.git",
     "webpack": "^4.10.2",
     "webpack-bundle-analyzer": "^2.13.1",
@@ -14,7 +17,8 @@
     "webpack-merge": "^4.1.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "build-dev": "webpack --config webpack/dev.config.js",
     "build": "webpack --config webpack/prod.config.js",
     "start": "webpack-dev-server --open --config webpack/dev.config.js",
