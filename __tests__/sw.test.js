@@ -45,8 +45,8 @@ describe('Service worker', () => {
       const upstreamRequests = global.fetch.mock.calls;
       const [upstreamRequestUrl, upstreamRequestOptions] = upstreamRequests.slice(-1)[0];
 
-      // should add the appropriate X-OpenWAF header
-      expect(response.headers.get('X-OpenWAF')).toEqual(options.wafHeader || 'ok');
+      // should add the appropriate X-Swaddle header
+      expect(response.headers.get('X-Swaddle')).toEqual(options.wafHeader || 'ok');
       // should have expected status
       expect(response.status).toEqual(options.status || 200);
       // should have 1 upstream request to fetch swagger.json, and 0 or 1 additional upstream requests depending on response code

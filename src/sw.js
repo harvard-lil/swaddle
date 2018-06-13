@@ -9,7 +9,7 @@ let validators = {};
 /* Add headers to response. */
 function addHeaders(response, status){
   const newHeaders = new Headers(response.headers);
-  newHeaders.append('X-OpenWAF', status);
+  newHeaders.append('X-Swaddle', status);
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
@@ -93,7 +93,7 @@ async function validateFetch(request){
       // route not found -- report 404 upstream
       if(err.statusCode === 404) {
         // TODO: what if any request attributes should be passed along in a 404?
-        if(OPENAPI_WAF_CONFIG.ERRORS_TO_CLIENT)
+        if(SWADDLE_CONFIG.ERRORS_TO_CLIENT)
           response = new Response(err.message, {status: err.statusCode});
         else
           response = await fetchWithQuery(origin + "/not-found", {
@@ -132,7 +132,7 @@ async function handleErrors(promiseResponse){
   } catch (err) {
     // Display the error stack.
     console.log("Caught error while validating:", err);
-    if(OPENAPI_WAF_CONFIG.ERRORS_TO_CLIENT)
+    if(SWADDLE_CONFIG.ERRORS_TO_CLIENT)
       return new Response(err.stack || err);
     else
       throw err;

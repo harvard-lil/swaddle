@@ -23,7 +23,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      OPENAPI_WAF_CONFIG: config.jsConfig,
+      SWADDLE_CONFIG: config.jsConfig,
     }),
   ],
 };
